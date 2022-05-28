@@ -2,21 +2,25 @@
 // ############### - Logcker - ############### //
 // ########################################### //
 
-import express from "express"
-import { startServer } from "./start-server";
+import express from "express";
+import http from 'http';
+import { Server } from 'socket.io';
+import { listenToContainers } from "./listen-to-containers";
 
-const port = process.env.PORT || 3000;
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+const port = process.env.PORT || 3003;
 
 app.use(express.static(__dirname + '/public'));
 
-app.use((err, req, res, next) => {
-  console.error("Handled", err);
-  res.status(500).send("Something went wrong");
+app.get("/", (req, res) => {
+  res.sendFile('/Users/solelan/Projects/logcker/public/index.html');
 });
 
-// ############# Start Server ############### //
-app.listen(port, () => {
-  startServer();
+io.on('connection', (socket) => console.log('user connected', socket));
+
+server.listen(port, () => {
   console.log(`Server is up, listening on port: ${port} `);
+  listenToContainers(io);
 });

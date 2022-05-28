@@ -1,0 +1,11 @@
+there are logs in the console
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+
+  socket.on('local', (msg) => {
+    console.log(msg);
+  });
+
+</script>
