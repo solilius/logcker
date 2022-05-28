@@ -3,6 +3,7 @@
 // ########################################### //
 
 import express from "express"
+import { startServer } from "./start-server";
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -16,5 +17,6 @@ app.use((err, req, res, next) => {
 
 // ############# Start Server ############### //
 app.listen(port, () => {
+  startServer();
   console.log(`Server is up, listening on port: ${port} `);
 });
