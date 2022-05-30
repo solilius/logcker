@@ -1,40 +1,36 @@
 <template>
-yo
-  <div id="app">
-
+  <div class="app">
+    <ContainersList/>
   </div>
 </template>
 
 <script>
-import { SocketConnection } from './services/socketio.service';
+import { SocketConnection } from "./services/socketio.service";
+import ContainersList from "./components/ContainersList";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
+    ContainersList,
   },
-   created() {
+  created() {
     SocketConnection.setupSocketConnection();
-
   },
   beforeUnmount() {
     SocketConnection.disconnect();
-  }
+  },
 };
 </script>
 
-<style >
-#app {
-  direction: rtl;
-  font-family: SimplerPro, 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  -webkit-text-size-adjust: 100%;
-  -moz-text-size-adjust: none;
-  -ms-text-size-adjust: 100%;
+<style>
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
+.app {
+  display: flex;
+  flex-direction: column;
 }
 </style>

@@ -19,6 +19,8 @@
   "devDependencies": {
     "@types/dockerode": "^3.3.9",
     "@types/express": "4.17.13",
-    "@types/node": "16.11.36"
+    "@types/node": "16.11.36",
+    "node-sass": "^7.0.1",
+    "sass-loader": "^13.0.0"
   }
 }
