@@ -1,17 +1,20 @@
 <template>
   <div class="app">
-    <ContainersList/>
+    <ContainersList />
+    <LogsViewerContainer />
   </div>
 </template>
 
 <script>
 import { SocketConnection } from "./services/socketio.service";
 import ContainersList from "./components/ContainersList";
+import LogsViewerContainer from "./components/LogsViewerContainer";
 
 export default {
   name: "App",
   components: {
     ContainersList,
+    LogsViewerContainer,
   },
   created() {
     SocketConnection.setupSocketConnection();
@@ -27,10 +30,11 @@ body {
   font-family: sans-serif;
   margin: 0;
   padding: 0;
+  background: rgb(42, 42, 60);
 }
 
 .app {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 </style>

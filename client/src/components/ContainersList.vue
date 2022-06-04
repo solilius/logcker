@@ -1,30 +1,48 @@
 <template>
   <div class="containers-list">
     <div class="title">Containers</div>
-    <div class="container" v-for="container in containers" :key="container">
-    <div class="name"> {{ container }} </div>
-    <div class="timestamp"> last log: {{ getLastLogTimestamp(container) }} </div>
-      
+    <div class="container" v-for="(container, containerName) in containers" :key="container">
+      <div class="name">{{ containerName }}</div>
+      <div class="timestamp">
+        last log: {{ getLastLogTimestamp(containerName) }}
+      </div>
+      <input
+        type="checkbox"
+        v-model="container.isDisplayed"
+        @click="toggleContainerDisplay(containerName)"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import store from '../store';
+import { ContainerProps } from "@/types";
+import store from "../store";
 
 export default {
   name: "ContainersList",
   computed: {
     containers() {
-      return Object.keys(store.state.logsByContainer);
+      return store.state.containers;
     },
   },
   methods: {
-    getLastLogTimestamp(containerName){
-      const container = store.state.logsByContainer[containerName]
-      const { timestamp } =  container[container?.length - 1];
+    getLastLogTimestamp(containerName) {
 
-      return new Date(timestamp).toISOString().split('T')[1].split('Z')[0];
+      const container = store.state.containers[containerName]?.logs;
+      if ( !container || container?.length === 0) {
+        return "waiting...";
+      }
+
+      const { timestamp } = container[container?.length - 1];
+
+      return new Date(timestamp).toISOString().split("T")[1].split("Z")[0];
+    },
+    toggleContainerDisplay(container) {
+      store.commit("toggleProp", {
+        containerName: container,
+        prop: ContainerProps.isDisplayed,
+      });
     },
   },
 };
@@ -53,8 +71,10 @@ export default {
   height: 60px;
   border: solid 1px grey;
   border-radius: 4px;
+  background-color: rgb(30, 30, 30);
   margin: 8px;
   padding: 8px;
+  cursor: pointer;
 
   .name {
     color: rgb(220, 217, 217);
@@ -66,6 +86,5 @@ export default {
     font-size: 12px;
     margin-top: 4px;
   }
-  
 }
 </style>

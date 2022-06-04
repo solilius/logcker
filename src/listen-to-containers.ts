@@ -24,6 +24,7 @@ const _listenToContainerLogs = ({ docker, container, socket }: Options) => {
             data: Buffer.from(data).toString().trim(),
           };
           socket.emit(SOCKET, log);
+          console.log(log);
         });
       });
   } catch (error) {

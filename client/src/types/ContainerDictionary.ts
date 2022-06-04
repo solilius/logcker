@@ -1,4 +1,6 @@
-import { Log } from ".";
-export type ContainerDictionary = {
-  [containerName: string]: Log[];
+import { Container } from ".";
+
+export type Containers = {
+  [containerName: string]: Container;
 };
+

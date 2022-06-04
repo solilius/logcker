@@ -1,27 +1,35 @@
 import { createStore } from "vuex";
-import type { Log, ContainerDictionary } from "../types";
+import { Log, Containers, ContainerProps } from "../types";
+import _, { rest } from "lodash";
 
-const MAX_CONTAINER_LOGS = 10;
+const MAX_CONTAINER_LOGS = 100;
+const LOCAL_STATE = "local-state";
 
 // @ts-ignore
 export default createStore({
   state: {
-    logsByContainer: {} as ContainerDictionary,
+    containers: JSON.parse(
+      localStorage.getItem(LOCAL_STATE) || "{}"
+    ) as Containers,
     allLogs: [] as Log[],
-    containersBlackList: [] as string[],
   },
   mutations: {
-    addLogToContainer({logsByContainer, allLogs}, log) {
-      const containerName = log.origin;
+    addLogToContainer({ containers, allLogs }, log) {
+      const { origin: containerName, ...logData } = log;
 
-      if (logsByContainer[containerName] === undefined) {
-        logsByContainer[containerName] = [];
+      if (containers[containerName] === undefined) {
+        containers[containerName] = {
+          isDisplayed: false,
+          isOn: false,
+          isSticky: false,
+          logs: [],
+        };
       }
 
-      const container = logsByContainer[containerName];
+      const container = containers[containerName];
 
-      if (container?.length >= MAX_CONTAINER_LOGS) {
-        container.shift();
+      if (container.logs?.length >= MAX_CONTAINER_LOGS) {
+        container.logs?.shift();
       }
 
       if (allLogs.length >= MAX_CONTAINER_LOGS) {
@@ -29,15 +37,33 @@ export default createStore({
       }
 
       allLogs.push(log);
-      container.push(log);
+      container.logs.push(logData);
+    },
+    toggleProp(state, data: { containerName: string; prop: ContainerProps }) {
+      const { containerName, prop } = data;
+      // @ts-ignore
+      state.containers[containerName][prop] =
+        !state.containers[containerName][prop];
+
+      _updateLocalStorage(state.containers);
     },
   },
   actions: {
     processLog({ state }, log: Log) {
-      if (!state.containersBlackList.includes(log?.origin)) {
+      //filter out logs from filtered containers and accept from new containers
+      if (!state.containers[log?.origin]?.isOn) {
         this.commit("addLogToContainer", log);
       }
     },
   },
   modules: {},
 });
+
+function _updateLocalStorage(containers: Containers) {
+  const containerWithoutLogs = {} as Containers;
+  _.forOwn(containers, (value, key) => {
+    containerWithoutLogs[key] = { ...value, logs: [] };
+  });
+
+  localStorage.setItem(LOCAL_STATE, JSON.stringify(containerWithoutLogs));
+}
