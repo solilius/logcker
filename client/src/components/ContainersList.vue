@@ -1,7 +1,7 @@
 <template>
   <div class="list-title" @click="toggleList()">
     <div>{{ listTitle }}</div>
-    <div>{{ listArrowDirection }}</div>
+    <div :id="arrowId" class="arrow">▲</div>
   </div>
   <div :id="listId" class="containers-list">
     <ContainerItem
@@ -42,23 +42,29 @@ export default {
     listId() {
       return `containers-list-${this.title}`;
     },
+    arrowId() {
+      return `arrow-${this.title}`;
+    },
     listTitle() {
       return this.title;
     },
     containers() {
       return _.omitBy(store.state.containers, this.filterBy);
     },
-    listArrowDirection() {
-      return this.isListCollapsed ? "▲" : "▼";
-    },
   },
   methods: {
     toggleList() {
       this.isListCollapsed = !this.isListCollapsed;
+
       document.getElementById(this.listId).style.maxHeight = this
         .isListCollapsed
         ? "0px"
         : "100vh";
+
+      document.getElementById(this.arrowId).style.transform = this
+        .isListCollapsed
+        ? "rotateX(180deg)"
+        : "rotateX(0deg)";
     },
   },
 };
@@ -83,5 +89,8 @@ export default {
   max-height: 100vh;
   overflow-y: auto;
   transition: max-height 0.2s ease-in-out;
+}
+.arrow {
+  transition: 0.3s ease-in-out;
 }
 </style>
