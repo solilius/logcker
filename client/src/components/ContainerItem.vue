@@ -9,26 +9,38 @@
       </div>
 
       <div class="is-display-switch">
-        <span>view</span>
-        <input
-          type="checkbox"
-          v-model="isDisplayed"
+        <SwitchaCheckbox
+          :value="!!isDisplayed"
+          color="deepskyblue"
           @click="toggleContainerDisplay(containerName)"
         />
+        <span>view</span>
       </div>
     </div>
 
-    <div class="row" v-if="!isCollapsed"></div>
-    <div class="arrow-collapse" :id="arrowId" @click="toggleItemCollaped()">▲</div>
+    <div class="row" v-if="!isCollapsed">
+      <SwitchaCheckbox
+        :value="!isListening"
+        color="red"
+        @click="toggleContainerListening(containerName)"
+      />
+    </div>
+    <div class="arrow-collapse" :id="arrowId" @click="toggleItemCollaped()">
+      ▵
+    </div>
   </div>
 </template>
 
 <script>
 import { ContainerProps } from "@/types";
+import SwitchaCheckbox from "@/components/atoms/SwitchaCheckbox.vue";
 import store from "../store";
 
 export default {
   name: "ContainerItem",
+  components: {
+    SwitchaCheckbox,
+  },
   data() {
     return {
       isCollapsed: true,
@@ -50,6 +62,9 @@ export default {
     isDisplayed() {
       return store.state.containers[this.containerName].isDisplayed;
     },
+    isListening() {
+      return store.state.containers[this.containerName].isListening;
+    },
   },
   methods: {
     getLastLogTimestamp(containerName) {
@@ -62,16 +77,39 @@ export default {
 
       return new Date(timestamp).toISOString().split("T")[1].split("Z")[0];
     },
-    toggleContainerDisplay(container) {
+    toggleContainerDisplay(containerName) {
       store.commit("toggleProp", {
-        containerName: container,
+        containerName,
         prop: ContainerProps.isDisplayed,
+        value: !this.isDisplayed,
       });
+
+      if (this.isDisplayed) {
+        store.commit("toggleProp", {
+          containerName,
+          prop: ContainerProps.isListening,
+          value: true,
+        });
+      }
+    },
+    toggleContainerListening(containerName) {
+      store.commit("toggleProp", {
+        containerName,
+        prop: ContainerProps.isListening,
+        value: !this.isListening,
+      });
+
+      if (!this.isListening) {
+        store.commit("toggleProp", {
+          containerName,
+          prop: ContainerProps.isDisplayed,
+          value: false,
+        });
+      }
     },
     toggleItemCollaped() {
       this.isCollapsed = !this.isCollapsed;
-      document.getElementById(this.arrowId).style.transform = this
-        .isCollapsed
+      document.getElementById(this.arrowId).style.transform = this.isCollapsed
         ? "rotateX(180deg)"
         : "rotateX(0deg)";
 
@@ -104,6 +142,7 @@ export default {
   }
   .is-display-switch {
     display: flex;
+    flex-direction: column;
     align-items: center;
     font-size: 12px;
     color: white;
@@ -125,7 +164,7 @@ export default {
     cursor: pointer;
     text-align: right;
     width: 100%;
-    transition: .3s ease-in-out;
+    transition: 0.3s ease-in-out;
   }
 }
 </style>

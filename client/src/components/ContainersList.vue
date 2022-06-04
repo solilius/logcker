@@ -3,7 +3,7 @@
     <div>{{ listTitle }}</div>
     <div :id="arrowId" class="arrow">▲</div>
   </div>
-  <div :id="listId" class="containers-list">
+  <div :id="listId" :class="listClasses">
     <ContainerItem
       v-for="(container, containerName) in containers"
       :key="containerName"
@@ -17,6 +17,7 @@
 import store from "@/store";
 import _ from "lodash";
 import ContainerItem from "@/components/ContainerItem.vue";
+import { ContainerListType } from "@/types";
 
 export default {
   name: "ContainersList",
@@ -29,8 +30,8 @@ export default {
     };
   },
   props: {
-    title: {
-      type: String,
+    listType: {
+      type: ContainerListType,
       required: true,
     },
     filterBy: {
@@ -40,16 +41,22 @@ export default {
   },
   computed: {
     listId() {
-      return `containers-list-${this.title}`;
+      return `containers-list-${this.listType}`;
     },
     arrowId() {
-      return `arrow-${this.title}`;
+      return `arrow-${this.listType}`;
+    },
+    listClasses(){
+      return {
+        'containers-list': true,
+        'ignored': this.listType === 'Ignored',
+      }
     },
     listTitle() {
-      return this.title;
+      return this.listType;
     },
     containers() {
-      return _.omitBy(store.state.containers, this.filterBy);
+      return _.pickBy(store.state.containers, this.filterBy);
     },
   },
   methods: {
@@ -92,5 +99,9 @@ export default {
 }
 .arrow {
   transition: 0.3s ease-in-out;
+}
+
+.ignored {
+  opacity: 0.3;
 }
 </style>

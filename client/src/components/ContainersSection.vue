@@ -1,8 +1,8 @@
 <template>
   <div class="section">
     <div class="containers-title">Containers</div>
-    <ContainersList title="Listening" :filterBy="filteredByListening" />
-    <ContainersList title="Ignored" :filterBy="filteredByIgnored" />
+    <ContainersList listType="Listening" :filterBy="filteredByListening" />
+    <ContainersList listType="Ignored" :filterBy="filteredByIgnored" />
   </div>
 </template>
 

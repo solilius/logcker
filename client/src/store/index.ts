@@ -19,6 +19,7 @@ export default createStore({
 
       if (containers[containerName] === undefined) {
         containers[containerName] = {
+          isListening: true,
           logs: [],
         };
       }
@@ -36,11 +37,12 @@ export default createStore({
       allLogs.push(log);
       container.logs.push(logData);
     },
-    toggleProp(state, data: { containerName: string; prop: ContainerProps }) {
-      const { containerName, prop } = data;
+
+    toggleProp(state, data: { containerName: string; prop: ContainerProps, value: boolean }) {
+      console.log(data);
+      const { containerName, prop, value } = data;
       // @ts-ignore
-      state.containers[containerName][prop] =
-        !state.containers[containerName][prop];
+      state.containers[containerName][prop] = value;
 
       _updateLocalStorage(state.containers);
     },
@@ -48,7 +50,10 @@ export default createStore({
   actions: {
     processLog({ state }, log: Log) {
       //filter out logs from filtered containers and accept from new containers
-      if (!state.containers[log?.origin]?.isListening) {
+      if (
+        state.containers[log?.origin] === undefined ||
+        state.containers[log?.origin]?.isListening
+      ) {
         this.commit("addLogToContainer", log);
       }
     },

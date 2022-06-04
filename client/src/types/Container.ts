@@ -18,3 +18,6 @@ export const enum ContainerProps {
   isDisplayOnlyErrors = "isDisplayOnlyErrors",
   logs = "logs",
 }
+
+
+export type ContainerListType = "Listening" | "Ignore"
