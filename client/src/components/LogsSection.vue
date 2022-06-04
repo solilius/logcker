@@ -12,7 +12,7 @@ import * as _ from "lodash";
 import LogsViewer from "./LogsViewer.vue";
 
 export default {
-  name: "LogsViewerContainer",
+  name: "LogsSection",
   components: {
     LogsViewer,
   },
@@ -27,7 +27,7 @@ export default {
 };
 </script>
 
-<style lang="scss"  >
+<style lang="scss" scoped >
 .containers {
   display: flex;
   width: 85vw;

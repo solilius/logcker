@@ -1,20 +1,20 @@
 <template>
   <div class="app">
-    <ContainersList />
-    <LogsViewerContainer />
+    <ContainersSection />
+    <LogsSection />
   </div>
 </template>
 
 <script>
 import { SocketConnection } from "./services/socketio.service";
-import ContainersList from "./components/ContainersList";
-import LogsViewerContainer from "./components/LogsViewerContainer";
+import ContainersSection from "./components/ContainersSection";
+import LogsSection from "./components/LogsSection";
 
 export default {
   name: "App",
   components: {
-    ContainersList,
-    LogsViewerContainer,
+    ContainersSection,
+    LogsSection,
   },
   created() {
     SocketConnection.setupSocketConnection();

@@ -43,6 +43,7 @@ export default {
 </script>
 
 <style lang="scss">
+
 .componet {
   border: solid 1px grey;
 }

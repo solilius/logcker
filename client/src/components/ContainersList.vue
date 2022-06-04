@@ -1,90 +1,87 @@
 <template>
-  <div class="containers-list">
-    <div class="title">Containers</div>
-    <div class="container" v-for="(container, containerName) in containers" :key="container">
-      <div class="name">{{ containerName }}</div>
-      <div class="timestamp">
-        last log: {{ getLastLogTimestamp(containerName) }}
-      </div>
-      <input
-        type="checkbox"
-        v-model="container.isDisplayed"
-        @click="toggleContainerDisplay(containerName)"
-      />
-    </div>
+  <div class="list-title" @click="toggleList()">
+    <div>{{ listTitle }}</div>
+    <div>{{ listArrowDirection }}</div>
+  </div>
+  <div :id="listId" class="containers-list">
+    <ContainerItem
+      v-for="(container, containerName) in containers"
+      :key="containerName"
+      :container="container"
+      :containerName="containerName"
+    />
   </div>
 </template>
 
 <script>
-import { ContainerProps } from "@/types";
-import store from "../store";
+import store from "@/store";
+import _ from "lodash";
+import ContainerItem from "@/components/ContainerItem.vue";
 
 export default {
   name: "ContainersList",
+  components: {
+    ContainerItem,
+  },
+  data() {
+    return {
+      isListCollapsed: false,
+    };
+  },
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+    filterBy: {
+      type: Function,
+      required: true,
+    },
+  },
   computed: {
+    listId() {
+      return `containers-list-${this.title}`;
+    },
+    listTitle() {
+      return this.title;
+    },
     containers() {
-      return store.state.containers;
+      return _.omitBy(store.state.containers, this.filterBy);
+    },
+    listArrowDirection() {
+      return this.isListCollapsed ? "▲" : "▼";
     },
   },
   methods: {
-    getLastLogTimestamp(containerName) {
-
-      const container = store.state.containers[containerName]?.logs;
-      if ( !container || container?.length === 0) {
-        return "waiting...";
-      }
-
-      const { timestamp } = container[container?.length - 1];
-
-      return new Date(timestamp).toISOString().split("T")[1].split("Z")[0];
-    },
-    toggleContainerDisplay(container) {
-      store.commit("toggleProp", {
-        containerName: container,
-        prop: ContainerProps.isDisplayed,
-      });
+    toggleList() {
+      this.isListCollapsed = !this.isListCollapsed;
+      document.getElementById(this.listId).style.maxHeight = this
+        .isListCollapsed
+        ? "0px"
+        : "100vh";
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.title {
-  margin: 16px;
-  color: white;
-  font-size: 22px;
-  font-weight: 600;
+.list-title {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px;
+  width: 90%;
+  cursor: pointer;
+  color: rgb(133, 133, 133);
+  font-size: 16px;
+  font-family: monospace;
 }
-
 .containers-list {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 15vw;
-  height: 100vh;
-  background: rgb(28, 28, 28);
+  max-height: 100vh;
   overflow-y: auto;
-}
-
-.container {
-  width: 80%;
-  height: 60px;
-  border: solid 1px grey;
-  border-radius: 4px;
-  background-color: rgb(30, 30, 30);
-  margin: 8px;
-  padding: 8px;
-  cursor: pointer;
-
-  .name {
-    color: rgb(220, 217, 217);
-    font-size: 16px;
-  }
-
-  .timestamp {
-    color: rgb(157, 157, 157);
-    font-size: 12px;
-    margin-top: 4px;
-  }
+  transition: max-height 0.2s ease-in-out;
 }
 </style>

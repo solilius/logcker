@@ -1,18 +1,18 @@
 import { Log } from "./Log";
 
 export type Container = {
+  logs: Log[];
   isDisplayed?: boolean;
-  isOn?: boolean;
+  isListening?: boolean;
   isSticky?: boolean;
   filterTerm?: string;
   isDisplayOnlyErrors?: boolean;
-  logs: Log[];
 };
 
 // TODO: Find a good way to get the props
 export const enum ContainerProps {
   isDisplayed = "isDisplayed",
-  isOn = "isOn",
+  isListening = "isListening",
   isSticky = "isSticky",
   filterTerm = "filterTerm",
   isDisplayOnlyErrors = "isDisplayOnlyErrors",

@@ -1,6 +1,6 @@
 import { createStore } from "vuex";
 import { Log, Containers, ContainerProps } from "../types";
-import _, { rest } from "lodash";
+import _ from "lodash";
 
 const MAX_CONTAINER_LOGS = 100;
 const LOCAL_STATE = "local-state";
@@ -19,9 +19,6 @@ export default createStore({
 
       if (containers[containerName] === undefined) {
         containers[containerName] = {
-          isDisplayed: false,
-          isOn: false,
-          isSticky: false,
           logs: [],
         };
       }
@@ -51,7 +48,7 @@ export default createStore({
   actions: {
     processLog({ state }, log: Log) {
       //filter out logs from filtered containers and accept from new containers
-      if (!state.containers[log?.origin]?.isOn) {
+      if (!state.containers[log?.origin]?.isListening) {
         this.commit("addLogToContainer", log);
       }
     },
