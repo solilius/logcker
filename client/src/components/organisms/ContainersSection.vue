@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import ContainersList from "@/components/ContainersList";
+import ContainersList from "@/components/molecules/ContainersList.vue";
 
 export default {
   name: "ContainersSection",

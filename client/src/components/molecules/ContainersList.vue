@@ -16,7 +16,7 @@
 <script>
 import store from "@/store";
 import _ from "lodash";
-import ContainerItem from "@/components/ContainerItem.vue";
+import ContainerItem from "@/components/molecules/ContainerItem.vue";
 import { ContainerListType } from "@/types";
 
 export default {

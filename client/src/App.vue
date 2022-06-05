@@ -6,9 +6,9 @@
 </template>
 
 <script>
-import { SocketConnection } from "./services/socketio.service";
-import ContainersSection from "./components/ContainersSection";
-import LogsSection from "./components/LogsSection";
+import { SocketConnection } from "@/services/socketio.service";
+import ContainersSection from "@/components/organisms/ContainersSection.vue";
+import LogsSection from "@/components/organisms/LogsSection.vue";
 
 export default {
   name: "App",

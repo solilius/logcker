@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import store from "../store";
-import * as _ from "lodash";
-import LogsViewer from "./LogsViewer.vue";
+import _ from "lodash";
+import store from "@/store";
+import LogsViewer from "@/components/molecules/LogsViewer.vue";
 
 export default {
   name: "LogsSection",

@@ -34,7 +34,7 @@
 <script>
 import { ContainerProps } from "@/types";
 import SwitchaCheckbox from "@/components/atoms/SwitchaCheckbox.vue";
-import store from "../store";
+import store from "@/store";
 
 export default {
   name: "ContainerItem",
