@@ -3,16 +3,14 @@
     <div class="row">
       <div>
         <div class="container-name">{{ containerName }}</div>
-        <div class="timestamp">
-          last log: {{ getLastLogTimestamp(containerName) }}
-        </div>
+        <div class="timestamp">last log: {{ getLastLogTimestamp() }}</div>
       </div>
 
       <div class="is-display-switch">
         <SwitchaCheckbox
           :value="!!isDisplayed"
           color="deepskyblue"
-          @click="toggleContainerDisplay(containerName)"
+          @click="toggleContainerDisplay()"
         />
         <span>view</span>
       </div>
@@ -22,7 +20,7 @@
       <SwitchaCheckbox
         :value="!isListening"
         color="red"
-        @click="toggleContainerListening(containerName)"
+        @click="toggleContainerListening()"
       />
     </div>
     <div class="arrow-collapse" :id="arrowId" @click="toggleItemCollaped()">
@@ -67,8 +65,8 @@ export default {
     },
   },
   methods: {
-    getLastLogTimestamp(containerName) {
-      const container = store.state.containers[containerName]?.logs;
+    getLastLogTimestamp() {
+      const container = store.state.containers[this.containerName]?.logs;
       if (!container || container?.length === 0) {
         return "waiting...";
       }
@@ -77,31 +75,31 @@ export default {
 
       return new Date(timestamp).toISOString().split("T")[1].split("Z")[0];
     },
-    toggleContainerDisplay(containerName) {
+    toggleContainerDisplay() {
       store.commit("toggleProp", {
-        containerName,
+        containerName: this.containerName,
         prop: ContainerProps.isDisplayed,
         value: !this.isDisplayed,
       });
 
       if (this.isDisplayed) {
         store.commit("toggleProp", {
-          containerName,
+          containerName: this.containerName,
           prop: ContainerProps.isListening,
           value: true,
         });
       }
     },
-    toggleContainerListening(containerName) {
+    toggleContainerListening() {
       store.commit("toggleProp", {
-        containerName,
+        containerName: this.containerName,
         prop: ContainerProps.isListening,
         value: !this.isListening,
       });
 
       if (!this.isListening) {
         store.commit("toggleProp", {
-          containerName,
+          containerName: this.containerName,
           prop: ContainerProps.isDisplayed,
           value: false,
         });
