@@ -39,7 +39,6 @@ export default createStore({
     },
 
     toggleProp(state, data: { containerName: string; prop: ContainerProps, value: boolean }) {
-      console.log(data);
       const { containerName, prop, value } = data;
       // @ts-ignore
       state.containers[containerName][prop] = value;

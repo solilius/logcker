@@ -1,6 +1,6 @@
 <template>
   <div class="list-title" @click="toggleList()">
-    <div>{{ listTitle }}</div>
+    <div>{{ listTitle }} [{{numOfContainers}}]</div>
     <div :id="arrowId" class="arrow">▲</div>
   </div>
   <div :id="listId" :class="listClasses">
@@ -58,6 +58,9 @@ export default {
     containers() {
       return _.pickBy(store.state.containers, this.filterBy);
     },
+    numOfContainers() {
+      return Object.keys(this.containers || {}).length;
+    },
   },
   methods: {
     toggleList() {
@@ -93,9 +96,8 @@ export default {
   flex-direction: column;
   align-items: center;
   width: 15vw;
-  max-height: 100vh;
-  overflow-y: auto;
   transition: max-height 0.2s ease-in-out;
+  overflow: hidden;
 }
 .arrow {
   transition: 0.3s ease-in-out;

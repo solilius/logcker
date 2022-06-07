@@ -29,8 +29,7 @@ export default {
 .section {
   background: rgb(28, 28, 28);
   height: 100vh;
-  width: 15vw;
-  overflow-y: auto;
+  overflow-x: hidden;
 }
 .containers-title {
   margin: 16px;
