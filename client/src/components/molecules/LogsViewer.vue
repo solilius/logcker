@@ -45,7 +45,7 @@ export default {
     };
   },
   created() {
-    this.toggleAutoScroll();
+    this.autoScroll();
   },
   computed: {
     viewerId() {
@@ -69,14 +69,30 @@ export default {
         value: !store.state.containers[this.containerName]?.isSticky,
       });
 
-      this.toggleAutoScroll();
+      this.autoScroll();
     },
-    toggleAutoScroll() {
-      if (store.state.containers[this.containerName]?.isSticky) {
-        this.scrollSbuscriber = store?.subscribe(() => {
-          const objDiv = document.getElementById(this.viewerId);
-          objDiv.scrollTop = objDiv?.scrollHeight;
-        });
+    autoScroll() {
+      const SCROLL_MARGIN = 400;
+      if (this.isSticky) {
+        let objDiv = document.getElementById(this.viewerId);
+        this.scrollSbuscriber = store?.subscribeAction(
+          (payload) => {
+            if (payload.type === "processLog") {
+              if (!objDiv) {
+                objDiv = document.getElementById(this.viewerId);
+              }
+
+              if (
+                objDiv &&
+                objDiv.scrollTop > objDiv.scrollHeight - SCROLL_MARGIN
+              ) {
+                // scroll to bottom of the div
+                objDiv.scrollTop = objDiv.scrollHeight;
+              }
+            }
+          },
+          { prepend: true }
+        );
       } else {
         // will unsubscribe handler
         this.scrollSbuscriber?.call();
@@ -104,12 +120,11 @@ export default {
       justify-content: space-between;
       align-items: center;
 
-    span {
-      color: grey;
-      margin-left: 4px;
-      font-size: 12px;
-
-    }  
+      span {
+        color: grey;
+        margin-left: 4px;
+        font-size: 12px;
+      }
     }
   }
 
@@ -123,8 +138,7 @@ export default {
     height: 45vh;
     background: black;
     overflow-y: auto;
-    scrollbar-width: none;  /* Firefox */
-
+    scrollbar-width: none; /* Firefox */
 
     .log {
       display: flex;
@@ -144,8 +158,8 @@ export default {
       }
     }
   }
- .container-view::-webkit-scrollbar { 
-    display: none;  /* Safari and Chrome */
-} 
+  .container-view::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
 }
 </style>
