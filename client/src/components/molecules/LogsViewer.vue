@@ -2,9 +2,10 @@
   <div class="componet">
     <div class="viewer-header">
       <div class="title">{{ containerName }}</div>
-      <div class="auto-scroll-switch-box">
+      <div class="header-right">
         <span>Auto Scroll</span>
         <SwitchaCheckbox :value="!!isSticky" @click="isStickyClicked()" />
+        <div class="close-viewer" @click="closeViewer()">X</div>
       </div>
     </div>
 
@@ -71,6 +72,13 @@ export default {
 
       this.autoScroll();
     },
+    closeViewer() {
+      store.commit("toggleProp", {
+        containerName: this.containerName,
+        prop: ContainerProps.isDisplayed,
+        value: false,
+      });
+    },
     autoScroll() {
       const SCROLL_MARGIN = 400;
       if (this.isSticky) {
@@ -111,14 +119,26 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 5vh;
+    height: 6vh;
     padding: 0 12px;
     background: #222121;
 
-    .auto-scroll-switch-box {
+    .header-right {
       display: flex;
       justify-content: space-between;
       align-items: center;
+
+      .close-viewer {
+        cursor: pointer;
+        color: white;
+        font-size: 16px;
+        margin-left: 16px;
+        font-family: fantasy;
+      }
+      .close-viewer:hover {
+        transform: scale(1.2);
+        transition: all 0.2s ease-in-out;
+      }
 
       span {
         color: grey;
@@ -129,13 +149,14 @@ export default {
   }
 
   .title {
-    padding: 14px;
     color: white;
-    font-size: 20px;
+    font-size: 22px;
+    font-family: monospace;
+
   }
 
   .container-view {
-    height: 45vh;
+    height: 44vh;
     background: black;
     overflow-y: auto;
     scrollbar-width: none; /* Firefox */
