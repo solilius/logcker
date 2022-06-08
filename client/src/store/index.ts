@@ -15,7 +15,7 @@ export default createStore({
   },
   mutations: {
     addLogToContainer({ containers, allLogs }, log) {
-      const { origin: containerName, ...logData } = log;
+      const containerName = log.origin;
 
       if (containers[containerName] === undefined) {
         containers[containerName] = {
@@ -35,7 +35,7 @@ export default createStore({
       }
 
       allLogs.push(log);
-      container.logs.push(logData);
+      container.logs.push(log);
     },
 
     toggleProp(state, data: { containerName: string; prop: ContainerProps, value: boolean }) {
