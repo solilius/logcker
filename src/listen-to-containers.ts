@@ -1,7 +1,10 @@
 import Docker, { ContainerInfo } from "dockerode";
 import { Server } from "socket.io";
 import { Log } from "./types/Log";
+import _ from "lodash";
+
 const SOCKET = "local";
+const CONTAINERS_CHECK_INTERVAL = 1000 * 10;
 
 interface Options {
   docker: Docker;
@@ -35,11 +38,24 @@ const _listenToContainerLogs = ({ docker, container, socket }: Options) => {
 export const listenToContainers = async (io) => {
   try {
     const docker = new Docker();
-    const containers = await docker.listContainers();
-
+    let containers = await docker.listContainers();
     containers.forEach((container) => {
       _listenToContainerLogs({ docker, container, socket: io });
     });
+
+    setInterval(async () => {
+      const newContainers = await docker.listContainers();
+      // check for new containers to listen too
+      const diff = _.differenceWith(
+        newContainers,
+        containers,
+        (a, b) => a.Id === b.Id
+      );
+      diff.forEach((container) => {
+        _listenToContainerLogs({ docker, container, socket: io });
+      });
+      containers = [...newContainers];
+    }, CONTAINERS_CHECK_INTERVAL);
   } catch (error) {
     console.error("Failed to start up", error);
   }
