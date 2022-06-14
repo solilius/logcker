@@ -24,9 +24,9 @@ export default {
     background: rgb(60, 60, 60);
     text-align: center;
     color: white;
-    width: 70%;
+    width: 75%;
     height: 25px;
-    margin-left: 15%;
+    margin-left: 12.5%;
     margin-bottom: 16px;
 }
 </style>

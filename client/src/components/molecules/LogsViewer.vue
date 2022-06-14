@@ -80,9 +80,10 @@ export default {
       });
     },
     autoScroll() {
-      const SCROLL_MARGIN = 400;
+      const SCROLL_MARGIN = 500;
       if (this.isSticky) {
         let objDiv = document.getElementById(this.viewerId);
+        (objDiv || {}).scrollTop = objDiv?.scrollHeight;
         this.scrollSbuscriber = store?.subscribeAction(
           (payload) => {
             if (payload.type === "processLog") {
@@ -92,7 +93,7 @@ export default {
 
               if (
                 objDiv &&
-                objDiv.scrollTop > objDiv.scrollHeight - SCROLL_MARGIN
+                objDiv.scrollTop > (objDiv.scrollHeight - SCROLL_MARGIN)
               ) {
                 // scroll to bottom of the div
                 objDiv.scrollTop = objDiv.scrollHeight;
