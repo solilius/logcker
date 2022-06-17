@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import { ContainerProps } from "@/types";
 import SwitchaCheckbox from "@/components/atoms/SwitchaCheckbox.vue";
 import store from "@/store";
 
@@ -76,34 +75,10 @@ export default {
       return new Date(timestamp).toISOString().split("T")[1].split("Z")[0];
     },
     toggleContainerDisplay() {
-      store.commit("toggleProp", {
-        containerName: this.containerName,
-        prop: ContainerProps.isDisplayed,
-        value: !this.isDisplayed,
-      });
-
-      if (this.isDisplayed) {
-        store.commit("toggleProp", {
-          containerName: this.containerName,
-          prop: ContainerProps.isListening,
-          value: true,
-        });
-      }
+      store.dispatch("toggleIsDisplayed",  this.containerName);
     },
     toggleContainerListening() {
-      store.commit("toggleProp", {
-        containerName: this.containerName,
-        prop: ContainerProps.isListening,
-        value: !this.isListening,
-      });
-
-      if (!this.isListening) {
-        store.commit("toggleProp", {
-          containerName: this.containerName,
-          prop: ContainerProps.isDisplayed,
-          value: false,
-        });
-      }
+      store.dispatch("toggleIsListening",  this.containerName);
     },
     toggleItemCollaped() {
       this.isCollapsed = !this.isCollapsed;

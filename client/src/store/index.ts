@@ -38,7 +38,10 @@ export default createStore({
       container.logs.push(log);
     },
 
-    toggleProp(state, data: { containerName: string; prop: ContainerProps, value: boolean }) {
+    toggleProp(
+      state,
+      data: { containerName: string; prop: ContainerProps; value: boolean }
+    ) {
       const { containerName, prop, value } = data;
       // @ts-ignore
       state.containers[containerName][prop] = value;
@@ -54,6 +57,39 @@ export default createStore({
         state.containers[log?.origin]?.isListening
       ) {
         this.commit("addLogToContainer", log);
+      }
+    },
+    toggleIsDisplayed({ state }, containerName) {
+      const isDisplayed = state.containers[containerName].isDisplayed;
+      this.commit("toggleProp", {
+        containerName: containerName,
+        prop: ContainerProps.isDisplayed,
+        value: !isDisplayed,
+      });
+
+      if (state.containers[containerName].isDisplayed) {
+        
+        this.commit("toggleProp", {
+          containerName: containerName,
+          prop: ContainerProps.isListening,
+          value: true,
+        });
+      }
+    },
+    toggleIsListening({ state }, containerName: string) {
+      const isListening = state.containers[containerName].isListening;
+      this.commit("toggleProp", {
+        containerName: containerName,
+        prop: ContainerProps.isListening,
+        value: !isListening,
+      });
+
+      if (!state.containers[containerName].isListening) {
+        this.commit("toggleProp", {
+          containerName: containerName,
+          prop: ContainerProps.isDisplayed,
+          value: false,
+        });
       }
     },
   },
