@@ -53,7 +53,10 @@ export default {
       return `${this.containerName}-viewer`;
     },
     logs() {
-      return store.state.containers[this.containerName]?.logs;
+      const container = store.state.containers[this.containerName];
+      return container.filterTerm
+        ? container.logs?.filter((l) => !l.data.includes(container.filterTerm))
+        : container.logs;
     },
     isSticky() {
       return store.state.containers[this.containerName].isSticky;
@@ -93,7 +96,7 @@ export default {
 
               if (
                 objDiv &&
-                objDiv.scrollTop > (objDiv.scrollHeight - SCROLL_MARGIN)
+                objDiv.scrollTop > objDiv.scrollHeight - SCROLL_MARGIN
               ) {
                 // scroll to bottom of the div
                 objDiv.scrollTop = objDiv.scrollHeight;
@@ -153,7 +156,6 @@ export default {
     color: white;
     font-size: 22px;
     font-family: monospace;
-
   }
 
   .container-view {

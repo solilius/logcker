@@ -48,6 +48,9 @@ export default createStore({
 
       _updateLocalStorage(state.containers);
     },
+    updateContainerFilterTerm(state, {containerName, term}){
+      state.containers[containerName].filterTerm = term;
+    }
   },
   actions: {
     processLog({ state }, log: Log) {

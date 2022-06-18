@@ -15,16 +15,26 @@
         <span>view</span>
       </div>
     </div>
-
-    <div class="row" v-if="!isCollapsed">
-      <SwitchaCheckbox
-        :value="!isListening"
-        color="red"
-        @click="toggleContainerListening()"
-      />
-    </div>
     <div class="arrow-collapse" :id="arrowId" @click="toggleItemCollaped()">
-      ▵
+      ▽
+    </div>
+    <div class="hidden-shef">
+      <div class="filter-container">
+        <input
+          class="filter"
+          type="text"
+          v-on:keyup="updateFilterTerm"
+          placeholder="Filter out logs"
+        />
+      </div>
+      <div class="shelf-row">
+        <span class="shelf-span"> Listening </span>
+        <SwitchaCheckbox
+          :value="!isListening"
+          color="red"
+          @click="toggleContainerListening()"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -74,21 +84,28 @@ export default {
 
       return new Date(timestamp).toISOString().split("T")[1].split("Z")[0];
     },
+    updateFilterTerm(event) {
+      store.commit("updateContainerFilterTerm", {
+        containerName: this.containerName,
+        term: event.target.value,
+      });
+    },
+
     toggleContainerDisplay() {
-      store.dispatch("toggleIsDisplayed",  this.containerName);
+      store.dispatch("toggleIsDisplayed", this.containerName);
     },
     toggleContainerListening() {
-      store.dispatch("toggleIsListening",  this.containerName);
+      store.dispatch("toggleIsListening", this.containerName);
     },
     toggleItemCollaped() {
       this.isCollapsed = !this.isCollapsed;
       document.getElementById(this.arrowId).style.transform = this.isCollapsed
-        ? "rotateX(180deg)"
-        : "rotateX(0deg)";
+        ? "rotateX(0deg)"
+        : "rotateX(180deg)";
 
-      document.getElementById(this.itemId).style.minHeight = this.isCollapsed
-        ? "65px"
-        : "120px";
+      document.getElementById(this.itemId).style.height = this.isCollapsed
+        ? "60px"
+        : "140px";
     },
   },
 };
@@ -100,19 +117,33 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   width: 80%;
-  min-height: 65px;
+  height: 60px;
+  overflow: hidden;
   border: solid 1px grey;
   border-radius: 4px;
   background-color: rgb(30, 30, 30);
   margin: 8px;
   padding: 8px;
-  transition: min-height 0.2s ease-in-out;
+  transition: height 0.2s ease-in-out;
 
+  .hidden-shelf {
+    display: flex;
+    flex-direction: column;
+  }
   .row {
     display: flex;
-
     justify-content: space-between;
   }
+  .shelf-row {
+    display: flex;
+
+    .shelf-span {
+      color: rgb(211, 211, 211);
+      margin-right: 8px;
+      font-size: 14px;
+    }
+  }
+
   .is-display-switch {
     display: flex;
     flex-direction: column;
@@ -138,6 +169,25 @@ export default {
     text-align: right;
     width: 100%;
     transition: 0.3s ease-in-out;
+  }
+
+  .filter-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    .filter {
+      height: 16px;
+      width: 95%;
+      padding: 4px;
+      margin: 16px;
+      text-align: center;
+      border: solid 1px grey;
+      border-radius: 4px;
+      color: white;
+      background: #3c3c3c;
+      font-size: 12px;
+    }
   }
 }
 </style>
